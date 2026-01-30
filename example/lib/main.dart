@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:refresh_view_example/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,6 +13,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  TextDirection _textDirection = TextDirection.ltr;
+
+  void _toggleDirection() {
+    setState(() {
+      _textDirection = _textDirection == TextDirection.ltr ? TextDirection.rtl : TextDirection.ltr;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -20,9 +29,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(child: Text('Running on:,')),
+      home: Builder(
+        builder: (context) {
+          return Directionality(
+            textDirection: _textDirection,
+            child: HomePage(onToggleDirection: _toggleDirection, textDirection: _textDirection),
+          );
+        },
       ),
     );
   }

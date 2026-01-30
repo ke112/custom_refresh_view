@@ -1,0 +1,28 @@
+{
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.detectIndentation": false,
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "editor.insertSpaces": true,
+    "editor.rulers": [
+      120
+    ],
+    "editor.suggest.insertMode": "replace",
+    "editor.tabSize": 2
+  },
+  "dart.flutterSdkPaths": [
+    "~/fvm/versions/",
+    "~/.fvm/versions/"
+  ],
+  "dart.lineLength": 120,
+  "dart.showTodos": false,
+  "editor.formatOnSave": true,
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 120,
+  "files.watcherExclude": {
+    "**/.fvm": true
+  },
+  "search.exclude": {
+    "**/.fvm": true
+  },
+}
