@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   /// 下拉刷新
   Future<void> _handleRefresh() async {
-    await Future<void>.delayed(const Duration(milliseconds: 600));
+    await Future<void>.delayed(const Duration(milliseconds: 1600));
     setState(() {
       _resetItems();
     });
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   /// 上拉加载
   Future<void> _handleLoad() async {
-    await Future<void>.delayed(const Duration(milliseconds: 600));
+    await Future<void>.delayed(const Duration(milliseconds: 1600));
     setState(() {
       final start = items.length;
       items.addAll(List.generate(_pageSize, (index) => 'Item ${start + index + 1}'));

@@ -1,3 +1,4 @@
+import 'package:custom_refresh_view/src/widget/default_footer_widget.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,7 @@ class CustomRefreshView extends StatelessWidget {
     this.controller,
     this.physics,
     this.header,
+    this.footer,
   });
 
   final int itemCount;
@@ -22,6 +24,7 @@ class CustomRefreshView extends StatelessWidget {
   final ScrollController? controller;
   final ScrollPhysics? physics;
   final Header? header;
+  final Footer? footer;
   static const double _minHeaderExtent = 30;
 
   @override
@@ -30,6 +33,7 @@ class CustomRefreshView extends StatelessWidget {
       onRefresh: onRefresh,
       onLoad: onLoad,
       header: _buildHeader(),
+      footer: footer ?? buildDefaultFooter(),
       child: ListView.builder(
         controller: controller,
         physics: physics ?? const AlwaysScrollableScrollPhysics(),

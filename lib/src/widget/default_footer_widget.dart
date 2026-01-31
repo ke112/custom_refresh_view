@@ -1,0 +1,87 @@
+import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+Footer buildDefaultFooter() {
+  return BuilderFooter(
+    triggerOffset: 70,
+    clamping: false,
+    processedDuration: const Duration(milliseconds: 200),
+    position: IndicatorPosition.above,
+    builder: (ctx, state) {
+      final mode = state.mode;
+      final shouldShow =
+          mode == IndicatorMode.processing ||
+          mode == IndicatorMode.drag ||
+          mode == IndicatorMode.armed ||
+          mode == IndicatorMode.ready;
+      if (!shouldShow || state.offset <= 0) {
+        return const SizedBox.shrink();
+      }
+      final axis = state.axis;
+      final crossExtent = axis == Axis.vertical ? double.infinity : state.offset;
+      final mainExtent = axis == Axis.horizontal ? double.infinity : state.offset;
+      final alignment = axis == Axis.vertical ? AlignmentDirectional.center : AlignmentDirectional.centerStart;
+      return SizedBox(
+        width: crossExtent,
+        height: mainExtent,
+        child: Align(alignment: alignment, child: const _LoadingMoreDots()),
+      );
+    },
+  );
+}
+
+class _LoadingMoreDots extends StatefulWidget {
+  const _LoadingMoreDots();
+
+  @override
+  State<_LoadingMoreDots> createState() => _LoadingMoreDotsState();
+}
+
+class _LoadingMoreDotsState extends State<_LoadingMoreDots> {
+  static const Duration _interval = Duration(milliseconds: 500);
+  int _dotCount = 1;
+  late final Ticker _ticker;
+  Duration _elapsed = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Ticker(_onTick)..start();
+  }
+
+  void _onTick(Duration elapsed) {
+    final delta = elapsed - _elapsed;
+    if (delta < _interval) {
+      return;
+    }
+    _elapsed = elapsed;
+    setState(() {
+      _dotCount = _dotCount == 3 ? 1 : _dotCount + 1;
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium ?? DefaultTextStyle.of(context).style;
+    final activeColor = textStyle.color;
+    final inactiveColor = activeColor?.withValues(alpha: 0) ?? Colors.transparent;
+    return Text.rich(
+      TextSpan(
+        text: 'Loading More ',
+        children: List.generate(
+          3,
+          (index) => TextSpan(text: '.', style: TextStyle(color: index < _dotCount ? activeColor : inactiveColor)),
+        ),
+      ),
+      textDirection: Directionality.of(context),
+      style: textStyle,
+    );
+  }
+}
