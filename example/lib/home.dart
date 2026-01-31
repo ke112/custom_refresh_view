@@ -70,6 +70,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildItemWidget(BuildContext context, int index) {
+    String now = DateTime.now().toIso8601String().substring(0, 19);
+    now = now.replaceAll('T', ' ');
     return Padding(
       padding: const EdgeInsetsDirectional.only(bottom: 12),
       child: DecoratedBox(
@@ -78,7 +80,7 @@ class _HomePageState extends State<HomePage> {
           borderRadius: const BorderRadiusDirectional.all(Radius.circular(12)),
           border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
         ),
-        child: ListTile(title: Text(items[index]), subtitle: Text('Index ${index + 1}')),
+        child: ListTile(title: Text(items[index]), subtitle: Text('Index ${index + 1}   $now')),
       ),
     );
   }
