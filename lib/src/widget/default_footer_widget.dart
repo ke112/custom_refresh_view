@@ -2,12 +2,15 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-Footer buildDefaultFooter() {
+Footer buildDefaultFooter({
+  required double triggerOffset,
+  IndicatorPosition position = IndicatorPosition.above,
+}) {
   return BuilderFooter(
-    triggerOffset: 70,
+    triggerOffset: triggerOffset,
     clamping: false,
     processedDuration: const Duration(milliseconds: 200),
-    position: IndicatorPosition.above,
+    position: position,
     builder: (ctx, state) {
       final mode = state.mode;
       final shouldShow =

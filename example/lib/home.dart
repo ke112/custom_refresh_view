@@ -57,14 +57,33 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: CustomRefreshView(
-        itemCount: items.length,
-        onRefresh: _handleRefresh,
-        onLoad: _handleLoad,
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 12),
-        itemBuilder: (context, index) {
-          return _buildItemWidget(context, index);
-        },
+      body: Stack(
+        children: [
+          CustomRefreshView(
+            itemCount: items.length,
+            onRefresh: _handleRefresh,
+            onLoad: _handleLoad,
+            padding: EdgeInsetsDirectional.only(bottom: 100),
+            itemBuilder: (context, index) {
+              return _buildItemWidget(context, index);
+            },
+          ),
+          Positioned(
+            bottom: 50,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 50,
+              alignment: Alignment.center,
+              margin: const EdgeInsetsDirectional.symmetric(horizontal: 40),
+              decoration: BoxDecoration(
+                color: Colors.grey[600]?.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text('我是底部遮挡按钮', style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold)),
+            ),
+          ),
+        ],
       ),
     );
   }
