@@ -1,6 +1,8 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 
+/// Build default header widget
+/// 构建默认头部组件
 Header buildDefaultHeader({
   required double triggerOffset,
   required double minHeaderExtent,

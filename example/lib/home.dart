@@ -13,6 +13,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const int _pageSize = 10;
+  final RefreshController _refreshController = RefreshController();
+  final ScrollController _scrollController = ScrollController();
   List<String> items = [];
 
   @override
@@ -23,23 +25,38 @@ class _HomePageState extends State<HomePage> {
 
   /// 下拉刷新
   Future<void> _handleRefresh() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1600));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
     setState(() {
       _resetItems();
+      // _clearItems();
     });
+    _refreshController.resetNoMore();
+    _refreshController.setState(RefreshViewState.success);
   }
 
   /// 上拉加载
   Future<void> _handleLoad() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1600));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
     setState(() {
       final start = items.length;
       items.addAll(List.generate(_pageSize, (index) => 'Item ${start + index + 1}'));
     });
+    if (items.length >= 20) {
+      _refreshController.markNoMore();
+    }
   }
 
-  void _resetItems() {
+  void _clearItems() {
+    setState(() {
+      items = [];
+    });
+    _refreshController.setState(RefreshViewState.empty);
+  }
+
+  void _resetItems() async {
     items = List.generate(_pageSize, (index) => 'Item ${index + 1}');
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    _refreshController.setState(RefreshViewState.success);
   }
 
   @override
@@ -51,6 +68,11 @@ class _HomePageState extends State<HomePage> {
         title: Text('Home Page (${isRtl ? 'RTL' : 'LTR'})'),
         actions: [
           IconButton(
+            tooltip: 'Scroll to top & refresh',
+            icon: const Icon(Icons.refresh),
+            onPressed: _refreshController.scrollToStartAndRefresh,
+          ),
+          IconButton(
             tooltip: isRtl ? 'Switch to LTR' : 'Switch to RTL',
             icon: Icon(isRtl ? Icons.format_textdirection_l_to_r : Icons.format_textdirection_r_to_l),
             onPressed: widget.onToggleDirection,
@@ -60,6 +82,7 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           CustomRefreshView(
+            refreshController: _refreshController,
             itemCount: items.length,
             onRefresh: _handleRefresh,
             onLoad: _handleLoad,
@@ -67,20 +90,40 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               return _buildItemWidget(context, index);
             },
+            stateContentBuilder: (context, state) {
+              return Text('state: $state');
+            },
+            stateBuilder: (context, state, defaultView) {
+              if (state == RefreshViewState.loading) {
+                return const Center(child: CircularProgressIndicator(color: Colors.green));
+              }
+              if (state == RefreshViewState.error) {
+                return const Center(child: Text('Error'));
+              }
+              if (state == RefreshViewState.empty) {
+                return const Center(child: Text('Empty'));
+              }
+              return defaultView;
+            },
           ),
           Positioned(
             bottom: 50,
             left: 0,
             right: 0,
-            child: Container(
-              height: 50,
-              alignment: Alignment.center,
-              margin: const EdgeInsetsDirectional.symmetric(horizontal: 40),
-              decoration: BoxDecoration(
-                color: Colors.grey[600]?.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(12),
+            child: GestureDetector(
+              onTap: () {
+                _clearItems();
+              },
+              child: Container(
+                height: 50,
+                alignment: Alignment.center,
+                margin: const EdgeInsetsDirectional.symmetric(horizontal: 40),
+                decoration: BoxDecoration(color: Colors.grey[600], borderRadius: BorderRadius.circular(12)),
+                child: Text(
+                  '我是底部遮挡按钮',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
-              child: Text('我是底部遮挡按钮', style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -102,5 +145,12 @@ class _HomePageState extends State<HomePage> {
         child: ListTile(title: Text(items[index]), subtitle: Text('Index ${index + 1}   $now')),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 }

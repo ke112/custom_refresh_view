@@ -2,10 +2,9 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-Footer buildDefaultFooter({
-  required double triggerOffset,
-  IndicatorPosition position = IndicatorPosition.above,
-}) {
+/// Build default footer widget
+/// 构建默认尾部组件
+Footer buildDefaultFooter({required double triggerOffset, IndicatorPosition position = IndicatorPosition.above}) {
   return BuilderFooter(
     triggerOffset: triggerOffset,
     clamping: false,
@@ -13,6 +12,22 @@ Footer buildDefaultFooter({
     position: position,
     builder: (ctx, state) {
       final mode = state.mode;
+      final isNoMore = state.result == IndicatorResult.noMore;
+      final axis = state.axis;
+      final extent = state.offset > 0 ? state.offset : 44.0;
+      final crossExtent = axis == Axis.vertical ? double.infinity : extent;
+      final mainExtent = axis == Axis.horizontal ? double.infinity : extent;
+      final alignment = axis == Axis.vertical ? AlignmentDirectional.center : AlignmentDirectional.centerStart;
+
+      if (isNoMore) {
+        final textStyle = Theme.of(ctx).textTheme.bodyMedium ?? DefaultTextStyle.of(ctx).style;
+        return SizedBox(
+          width: crossExtent,
+          height: mainExtent,
+          child: Align(alignment: alignment, child: Text('没有更多了', style: textStyle)),
+        );
+      }
+
       final shouldShow =
           mode == IndicatorMode.processing ||
           mode == IndicatorMode.drag ||
@@ -21,10 +36,6 @@ Footer buildDefaultFooter({
       if (!shouldShow || state.offset <= 0) {
         return const SizedBox.shrink();
       }
-      final axis = state.axis;
-      final crossExtent = axis == Axis.vertical ? double.infinity : state.offset;
-      final mainExtent = axis == Axis.horizontal ? double.infinity : state.offset;
-      final alignment = axis == Axis.vertical ? AlignmentDirectional.center : AlignmentDirectional.centerStart;
       return SizedBox(
         width: crossExtent,
         height: mainExtent,
@@ -34,6 +45,8 @@ Footer buildDefaultFooter({
   );
 }
 
+/// Loading more dots widget
+/// 加载更多点组件
 class _LoadingMoreDots extends StatefulWidget {
   const _LoadingMoreDots();
 
