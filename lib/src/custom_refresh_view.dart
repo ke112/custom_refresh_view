@@ -17,35 +17,59 @@ class CustomRefreshView extends StatelessWidget {
     this.footer,
   });
 
+  /// Number of list items
   final int itemCount;
+
+  /// List item builder
   final IndexedWidgetBuilder itemBuilder;
+
+  /// Pull-to-refresh callback
   final Future<void> Function()? onRefresh;
+
+  /// Load-more callback
   final Future<void> Function()? onLoad;
+
+  /// Inner padding of the list
   final EdgeInsetsGeometry padding;
+
+  /// Scroll controller for the list
   final ScrollController? controller;
+
+  /// Scroll physics for the list
   final ScrollPhysics? physics;
+
+  /// Header indicator
   final Header? header;
+
+  /// Footer indicator
   final Footer? footer;
+
+  /// Minimum height of the header
   static const double _minHeaderExtent = 30;
+
+  /// Trigger offset for refresh/load
   static const double _triggerOffset = 70;
 
   @override
   Widget build(BuildContext context) {
-    final resolvedHeader = _resolveHeader();
-    final resolvedFooter = _resolveFooter();
     return EasyRefresh.builder(
       onRefresh: onRefresh,
       onLoad: onLoad,
-      header: resolvedHeader,
-      footer: resolvedFooter,
+      header: _resolveHeader(),
+      footer: _resolveFooter(),
       scrollController: controller,
       childBuilder: (context, refreshPhysics) {
-        final listPhysics = const AlwaysScrollableScrollPhysics().applyTo(refreshPhysics);
+        final listPhysics =
+            physics != null
+                ? physics!.applyTo(refreshPhysics)
+                : const AlwaysScrollableScrollPhysics().applyTo(refreshPhysics);
+
         final hasHeader = onRefresh != null;
         final hasFooter = onLoad != null;
         final extraStart = hasHeader ? 1 : 0;
         final extraEnd = hasFooter ? 1 : 0;
         final totalCount = itemCount + extraStart + extraEnd;
+
         return CustomScrollView(
           controller: controller,
           physics: listPhysics,
@@ -71,6 +95,7 @@ class CustomRefreshView extends StatelessWidget {
     );
   }
 
+  /// Resolve header configuration
   Header _resolveHeader() {
     final base =
         header ??
@@ -79,17 +104,22 @@ class CustomRefreshView extends StatelessWidget {
           minHeaderExtent: _minHeaderExtent,
           position: IndicatorPosition.locator,
         );
+
     if (base.position == IndicatorPosition.locator) {
       return base;
     }
+
     return OverrideHeader(header: base, position: IndicatorPosition.locator);
   }
 
+  /// Resolve footer configuration
   Footer _resolveFooter() {
     final base = footer ?? buildDefaultFooter(triggerOffset: _triggerOffset, position: IndicatorPosition.locator);
+
     if (base.position == IndicatorPosition.locator) {
       return base;
     }
+
     return OverrideFooter(footer: base, position: IndicatorPosition.locator);
   }
 }

@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
     String now = DateTime.now().toIso8601String().substring(0, 19);
     now = now.replaceAll('T', ' ');
     return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: 12),
+      padding: const EdgeInsetsDirectional.only(bottom: 12, start: 12, end: 12),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
