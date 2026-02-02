@@ -90,18 +90,15 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               return _buildItemWidget(context, index);
             },
-            stateContentBuilder: (context, state) {
-              return Text('state: $state');
-            },
             stateBuilder: (context, state, defaultView) {
               if (state == RefreshViewState.loading) {
                 return const Center(child: CircularProgressIndicator(color: Colors.green));
               }
               if (state == RefreshViewState.error) {
-                return const Center(child: Text('Error'));
+                return const Center(child: Text('Error222222'));
               }
               if (state == RefreshViewState.empty) {
-                return const Center(child: Text('Empty'));
+                return const Center(child: Text('Empty2222'));
               }
               return defaultView;
             },

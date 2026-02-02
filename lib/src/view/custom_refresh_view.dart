@@ -8,10 +8,6 @@ import 'package:flutter/material.dart';
 /// 根据刷新状态包裹默认视图的构建器
 typedef RefreshStateViewBuilder = Widget Function(BuildContext context, RefreshViewState state, Widget defaultView);
 
-/// Builder for providing custom content for loading/error/empty states
-/// 为 loading / error / empty 状态提供自定义内容的构建器
-typedef RefreshStateContentBuilder = Widget Function(BuildContext context, RefreshViewState state);
-
 class CustomRefreshView extends StatelessWidget {
   const CustomRefreshView({
     super.key,
@@ -26,7 +22,6 @@ class CustomRefreshView extends StatelessWidget {
     this.header,
     this.footer,
     this.stateBuilder,
-    this.stateContentBuilder,
   });
 
   /// Refresh controller
@@ -72,10 +67,6 @@ class CustomRefreshView extends StatelessWidget {
   /// Override view based on loading state
   /// 根据加载状态重写整体视图
   final RefreshStateViewBuilder? stateBuilder;
-
-  /// Override default content for loading/error/empty states
-  /// 重写 loading / error / empty 状态下的默认内容
-  final RefreshStateContentBuilder? stateContentBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -220,13 +211,6 @@ class CustomRefreshView extends StatelessWidget {
   /// 构建非成功状态下的默认内容
   Widget _buildDefaultStateContent(BuildContext context, RefreshViewState state) {
     final textStyle = Theme.of(context).textTheme.bodyMedium;
-
-    // Allow overriding state content
-    // 允许外部重写状态内容
-    final override = stateContentBuilder?.call(context, state);
-    if (override != null) {
-      return override;
-    }
 
     switch (state) {
       case RefreshViewState.loading:
