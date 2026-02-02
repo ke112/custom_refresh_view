@@ -1,3 +1,3 @@
 library custom_refresh_view;
 
-export 'src/custom_refresh_view.dart';
+export 'src/view/custom_refresh_view.dart';

@@ -1,3 +1,4 @@
+import 'package:custom_refresh_view/src/controller/refresh_controller.dart';
 import 'package:custom_refresh_view/src/widget/default_footer_widget.dart';
 import 'package:custom_refresh_view/src/widget/default_header_widget.dart';
 import 'package:easy_refresh/easy_refresh.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 class CustomRefreshView extends StatelessWidget {
   const CustomRefreshView({
     super.key,
+    this.refreshController,
     required this.itemCount,
     required this.itemBuilder,
     this.onRefresh,
@@ -16,6 +18,9 @@ class CustomRefreshView extends StatelessWidget {
     this.header,
     this.footer,
   });
+
+  /// Refresh controller
+  final RefreshController? refreshController;
 
   /// Number of list items
   final int itemCount;
@@ -43,12 +48,6 @@ class CustomRefreshView extends StatelessWidget {
 
   /// Footer indicator
   final Footer? footer;
-
-  /// Minimum height of the header
-  static const double _minHeaderExtent = 30;
-
-  /// Trigger offset for refresh/load
-  static const double _triggerOffset = 70;
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +99,8 @@ class CustomRefreshView extends StatelessWidget {
     final base =
         header ??
         buildDefaultHeader(
-          triggerOffset: _triggerOffset,
-          minHeaderExtent: _minHeaderExtent,
+          triggerOffset: refreshController?.triggerOffset ?? 70,
+          minHeaderExtent: refreshController?.minHeaderExtent ?? 30,
           position: IndicatorPosition.locator,
         );
 
@@ -114,7 +113,9 @@ class CustomRefreshView extends StatelessWidget {
 
   /// Resolve footer configuration
   Footer _resolveFooter() {
-    final base = footer ?? buildDefaultFooter(triggerOffset: _triggerOffset, position: IndicatorPosition.locator);
+    final base =
+        footer ??
+        buildDefaultFooter(triggerOffset: refreshController?.triggerOffset ?? 70, position: IndicatorPosition.locator);
 
     if (base.position == IndicatorPosition.locator) {
       return base;
