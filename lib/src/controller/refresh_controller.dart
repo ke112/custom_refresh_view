@@ -171,6 +171,12 @@ class RefreshController extends ChangeNotifier {
     bool jump = false,
   }) async {
     await scrollToStart(duration: duration, curve: curve, jump: jump);
+    // Reset header state first to clear any pending state from previous refresh
+    // 先重置 Header 状态，清除上次刷新可能残留的状态
+    _easyController.resetHeader();
+    // Wait for the reset to take effect in the next frame
+    // 等待重置在下一帧生效
+    await WidgetsBinding.instance.endOfFrame;
     await callRefresh(duration: duration, curve: curve, force: force);
   }
 
