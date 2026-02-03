@@ -107,6 +107,7 @@ class _HomePageState extends State<HomePage> {
             bottom: 50,
             left: 0,
             right: 0,
+<<<<<<< Updated upstream
             child: GestureDetector(
               onTap: () {
                 _clearItems();
@@ -121,6 +122,14 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
+=======
+            child: Container(
+              height: 50,
+              alignment: Alignment.center,
+              margin: const EdgeInsetsDirectional.symmetric(horizontal: 40),
+              decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
+              child: Text('我是底部遮挡按钮', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+>>>>>>> Stashed changes
             ),
           ),
         ],
@@ -132,7 +141,11 @@ class _HomePageState extends State<HomePage> {
     String now = DateTime.now().toIso8601String().substring(0, 19);
     now = now.replaceAll('T', ' ');
     return Padding(
+<<<<<<< Updated upstream
       padding: const EdgeInsetsDirectional.only(bottom: 12, start: 12, end: 12),
+=======
+      padding: EdgeInsetsDirectional.only(bottom: 12, start: 12, end: 12),
+>>>>>>> Stashed changes
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
