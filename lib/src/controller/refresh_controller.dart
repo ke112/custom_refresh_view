@@ -60,7 +60,7 @@ class RefreshController extends ChangeNotifier {
 
   /// Update loading state and notify listeners
   /// 更新加载状态并通知监听者
-  void setState(RefreshViewState state) {
+  void setListViewState(RefreshViewState state) {
     if (_state == state) {
       return;
     }
@@ -74,14 +74,6 @@ class RefreshController extends ChangeNotifier {
     _scrollController = controller;
   }
 
-  /// Mark load as no more data
-  /// 标记加载为“没有更多数据”
-  void markNoMore({bool force = false}) {
-    _noMore = true;
-    _loadResultSet = true;
-    _easyController.finishLoad(IndicatorResult.noMore, force);
-  }
-
   /// Reset no-more state to allow loading again
   /// 重置“没有更多数据”状态，允许再次加载
   void resetNoMore() {
@@ -91,10 +83,14 @@ class RefreshController extends ChangeNotifier {
 
   /// Mark load as success
   /// 标记加载成功
-  void finishLoadSuccess({bool force = false}) {
-    _noMore = false;
+  void finishLoadSuccess({required bool noMore, bool force = false}) {
     _loadResultSet = true;
-    _easyController.finishLoad(IndicatorResult.success, force);
+    _noMore = noMore;
+    if (noMore) {
+      _easyController.finishLoad(IndicatorResult.noMore, force);
+    } else {
+      _easyController.finishLoad(IndicatorResult.success, force);
+    }
   }
 
   /// Mark load as fail

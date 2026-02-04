@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       // _clearItems();
     });
     _refreshController.resetNoMore();
-    _refreshController.setState(RefreshViewState.success);
+    _refreshController.setListViewState(RefreshViewState.success);
   }
 
   /// 上拉加载
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
       items.addAll(List.generate(_pageSize, (index) => 'Item ${start + index + 1}'));
     });
     if (items.length >= 20) {
-      _refreshController.markNoMore();
+      _refreshController.finishLoadSuccess(noMore: true);
     }
   }
 
@@ -50,13 +50,13 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       items = [];
     });
-    _refreshController.setState(RefreshViewState.empty);
+    _refreshController.setListViewState(RefreshViewState.empty);
   }
 
   void _resetItems() async {
     items = List.generate(_pageSize, (index) => 'Item ${index + 1}');
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    _refreshController.setState(RefreshViewState.success);
+    _refreshController.setListViewState(RefreshViewState.success);
   }
 
   @override
@@ -90,29 +90,37 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (context, index) {
               return _buildItemWidget(context, index);
             },
-            stateBuilder: (context, state, defaultView) {
-              if (state == RefreshViewState.loading) {
-                return const Center(child: CircularProgressIndicator(color: Colors.green));
-              }
-              if (state == RefreshViewState.error) {
-                return const Center(child: Text('Error222222'));
-              }
-              if (state == RefreshViewState.empty) {
-                return const Center(child: Text('Empty2222'));
-              }
-              return defaultView;
-            },
+            // stateBuilder: (context, state, defaultView) {
+            //   if (state == RefreshViewState.loading) {
+            //     return const Center(child: CircularProgressIndicator(color: Colors.green));
+            //   }
+            //   if (state == RefreshViewState.error) {
+            //     return const Center(child: Text('Error222222'));
+            //   }
+            //   if (state == RefreshViewState.empty) {
+            //     return const Center(child: Text('Empty2222'));
+            //   }
+            //   return defaultView;
+            // },
           ),
           Positioned(
             bottom: 50,
             left: 0,
             right: 0,
-            child: Container(
-              height: 50,
-              alignment: Alignment.center,
-              margin: const EdgeInsetsDirectional.symmetric(horizontal: 40),
-              decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
-              child: Text('我是底部遮挡按钮', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            child: GestureDetector(
+              onTap: () {
+                _clearItems();
+              },
+              child: Container(
+                height: 50,
+                alignment: Alignment.center,
+                margin: const EdgeInsetsDirectional.symmetric(horizontal: 40),
+                decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
+                child: Text(
+                  '我是底部遮挡按钮,点击清空数据',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
           ),
         ],

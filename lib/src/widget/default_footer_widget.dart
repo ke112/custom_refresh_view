@@ -24,7 +24,7 @@ Footer buildDefaultFooter({required double triggerOffset, IndicatorPosition posi
         return SizedBox(
           width: crossExtent,
           height: mainExtent,
-          child: Align(alignment: alignment, child: Text('没有更多了', style: textStyle)),
+          child: Align(alignment: alignment, child: Text('No more data', style: textStyle)),
         );
       }
 
